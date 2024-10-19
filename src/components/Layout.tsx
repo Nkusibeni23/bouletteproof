@@ -7,13 +7,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <aside className="w-64 bg-gray-800 text-white flex flex-col">
         <div className="p-4 text-2xl font-bold mt-4">Dashboard</div>
         <nav className="flex-1 p-4 space-y-4 mt-20">
-          <Link href="/home">
-            <span className="block text-lg hover:bg-gray-700 p-2 rounded">
+          <Link href="/landing-page">
+            <span className="block text-lg hover:font-bold hover:bg-gray-700 p-3 rounded-md duration-300 transition-all ease-in">
               Home
             </span>
           </Link>
           <Link href="/detail-visit-analysis">
-            <span className="block text-lg hover:bg-gray-700 p-2 rounded">
+            <span className="block text-lg hover:font-bold hover:bg-gray-700 p-3 rounded-md duration-300 transition-all ease-in">
               Detail Visit Analysis
             </span>
           </Link>
