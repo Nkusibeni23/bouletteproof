@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Layout from "@/components/Layout";
 import { VisitData } from "@/types/WebsiteVisit";
 import Loading from "@/components/Loading";
@@ -75,7 +76,7 @@ const LandingPage = () => {
               {paginatedData.map((visit) => (
                 <div
                   key={visit.visit_id}
-                  className="bg-white shadow-lg rounded-xl p-6 border border-gray-200 hover:bg-gradient-to-r from-blue-50 to-blue-100 transition-all transform hover:scale-105 duration-200 ease-in-out cursor-pointer"
+                  className="bg-white shadow-lg rounded-xl p-6 border border-gray-200 hover:bg-gradient-to-r from-gray-50 to-gray-200 transition-all transform hover:scale-105 duration-200 ease-in-out cursor-pointer"
                 >
                   <h2 className="text-2xl font-bold text-gray-800 mb-3">
                     Visit Details
