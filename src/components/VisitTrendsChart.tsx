@@ -9,7 +9,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { VisitData } from "@/types/WebsiteVisit";
 import { VisitTrendsChartProps } from "@/types/VisitTrendsChart";
 
 // Register chart.js components
@@ -65,8 +64,10 @@ const VisitTrendsChart: React.FC<VisitTrendsChartProps> = ({
   };
 
   return (
-    <div>
-      <Line data={data} options={options} />
+    <div className="w-full min-h-screen sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+      <div className="overflow-x-auto">
+        <Line data={data} options={options} />
+      </div>
     </div>
   );
 };

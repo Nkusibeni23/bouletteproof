@@ -55,7 +55,7 @@ const CRMDataList = () => {
 
   return (
     <Layout>
-      <div>
+      <div className="px-4 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-semibold text-center my-6 text-gray-700">
           Customer Data List
         </h1>
@@ -78,7 +78,7 @@ const CRMDataList = () => {
         ) : (
           <>
             {/* CRM Data Table */}
-            <div className="overflow-x-auto">
+            <div className=" table-container overflow-x-auto">
               <table className="table-auto w-full text-left border-collapse border border-gray-200 cursor-pointer">
                 <thead>
                   <tr className="bg-gray-300 text-gray-700">
@@ -94,13 +94,13 @@ const CRMDataList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedCustomers.map((customer) => (
+                  {paginatedCustomers.map((customer, index) => (
                     <tr
                       key={customer.customer_id}
                       className="odd:bg-white even:bg-gray-100 hover:bg-gray-400"
                     >
                       <td className="border px-4 py-2">
-                        {customer.customer_id}
+                        {(currentPage - 1) * itemsPerPage + index + 1}
                       </td>
                       <td className="border px-4 py-2">
                         {customer.first_name} {customer.last_name}

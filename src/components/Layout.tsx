@@ -126,7 +126,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           {/* Toggle button */}
           <button
             onClick={toggleSidebar}
-            className="flex items-center focus:outline-none mb-6 absolute bottom-32 left-8"
+            className="flex items-center focus:outline-none mb-6 bottom-32 left-8 fixed"
           >
             {isSidebarOpen ? (
               <div className="py-2 px-4 bg-gray-600 flex items-center space-x-2 rounded-r-full">
