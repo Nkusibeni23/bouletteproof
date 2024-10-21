@@ -10,7 +10,7 @@ export async function GET() {
   } catch (error) {
     console.error(error);
 
-    // Safely handle the error by checking if it's an instance of Error
+    // Check if the error is an instance of Error and handle accordingly
     const errorMessage =
       error instanceof Error ? error.message : "An unknown error occurred";
 
