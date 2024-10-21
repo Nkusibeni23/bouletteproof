@@ -108,7 +108,7 @@ const LandingPage = () => {
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
-                handlePageChange={handlePageChange}
+                onPageChange={handlePageChange}
               />
             </div>
           </div>
