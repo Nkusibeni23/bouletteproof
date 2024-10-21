@@ -24,6 +24,8 @@ This is a responsive dashboard application built with Next.js and TypeScript. Th
 
    ```bash
    git clone https://github.com/Nkusibeni23/bouletteproof
+   cp .env.example .env.local
+   NEXT_PUBLIC_MOCKAROO_API_KEY=your_actual_api_key
    npm install
    npm run dev
    ```
