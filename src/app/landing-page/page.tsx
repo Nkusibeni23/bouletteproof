@@ -1,17 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
-import Layout from "../../components/Layout";
-import { VisitData } from "../../types/WebsiteVisit";
+import Layout from "@/components/Layout";
+import { VisitData } from "@/types/WebsiteVisit";
 import Loading from "@/components/Loading";
 import Pagination from "@/components/Pagination";
 
 const LandingPage = () => {
   // State for storing the visit data
   const [data, setData] = useState<VisitData[]>([]);
-
   // State for managing the current page in pagination
   const [currentPage, setCurrentPage] = useState(1);
-
   // State to show or hide the loading spinner
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +19,8 @@ const LandingPage = () => {
   // Fetch data on component mount using useEffect
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Start loading before fetching data
+      // Start loading before fetching data
+      setLoading(true);
       try {
         // Fetch data from the API
         const response = await fetch("/api/visit");

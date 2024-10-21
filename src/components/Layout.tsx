@@ -59,6 +59,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               Detail Visit Analysis
             </span>
           </Link>
+          <Link href="/crm-data">
+            <span
+              onClick={() => handleLinkClick("crm-data")}
+              className={`block text-lg p-3 rounded-md ${
+                activeLink === "crm-data"
+                  ? "bg-gray-700 font-bold"
+                  : "hover:bg-gray-700"
+              }`}
+            >
+              CRM Data
+            </span>
+          </Link>
         </nav>
         <div className="p-4">
           <Link href="/">
