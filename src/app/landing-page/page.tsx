@@ -8,18 +8,14 @@ import Pagination from "@/components/Pagination";
 const LandingPage = () => {
   // State for storing the visit data
   const [data, setData] = useState<VisitData[]>([]);
-  // State for managing the current page in pagination
   const [currentPage, setCurrentPage] = useState(1);
-  // State to show or hide the loading spinner
   const [loading, setLoading] = useState(true);
 
-  // Number of items to show per page in pagination
   const itemsPerPage = 10;
 
   // Fetch data on component mount using useEffect
   useEffect(() => {
     const fetchData = async () => {
-      // Start loading before fetching data
       setLoading(true);
       try {
         // Fetch data from the API
@@ -34,7 +30,6 @@ const LandingPage = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        // Stop loading once data fetching is done
         setLoading(false);
       }
     };
@@ -75,7 +70,7 @@ const LandingPage = () => {
         ) : (
           <div>
             {/* Cards Layout */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2 cursor-pointer">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 cursor-pointer">
               {/* Loop over the paginated data and display each visit's details */}
               {paginatedData.map((visit) => (
                 <div
@@ -109,11 +104,13 @@ const LandingPage = () => {
             </div>
 
             {/* Pagination */}
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              handlePageChange={handlePageChange}
-            />
+            <div className=" mt-10">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}
+              />
+            </div>
           </div>
         )}
       </div>
