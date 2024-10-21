@@ -4,12 +4,21 @@ import { CustomerData } from "@/types/CustomerDataType";
 import Layout from "@/components/Layout";
 import Pagination from "@/components/Pagination";
 import Loading from "@/components/Loading";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { format, isValid } from "date-fns";
 
 const CRMDataList = () => {
   const [customers, setCustomers] = useState<CustomerData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [sortCriteria, setSortCriteria] = useState<"name" | "birthday">("name");
+  const [startDate, setStartDate] = useState<string | null>(null);
+  const [endDate, setEndDate] = useState<string | null>(null);
+  const [sortOption, setSortOption] = useState<string>("name");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -21,6 +30,7 @@ const CRMDataList = () => {
           throw new Error("Failed to fetch customer data");
         }
         const data = await response.json();
+        console.log(data);
         setCustomers(data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -31,27 +41,97 @@ const CRMDataList = () => {
     fetchCustomerData();
   }, []);
 
+  // Apply filters
   const filteredCustomers = customers.filter((customer) => {
     const firstName = customer.first_name?.toLowerCase() || "";
     const lastName = customer.last_name?.toLowerCase() || "";
     const email = customer.email?.toLowerCase() || "";
 
+    // Date range filter
+    const signupDate = new Date(customer.signup_date);
+    const isWithinDateRange =
+      (!startDate || signupDate >= new Date(startDate)) &&
+      (!endDate || signupDate <= new Date(endDate));
+
     return (
-      firstName.includes(searchQuery.toLowerCase()) ||
-      lastName.includes(searchQuery.toLowerCase()) ||
-      email.includes(searchQuery.toLowerCase())
+      (firstName.includes(searchQuery.toLowerCase()) ||
+        lastName.includes(searchQuery.toLowerCase()) ||
+        email.includes(searchQuery.toLowerCase())) &&
+      isWithinDateRange
     );
   });
 
-  const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  // Sorting logic
+  const sortedCustomers = filteredCustomers.sort((a, b) => {
+    let comparison = 0;
 
-  const paginatedCustomers = filteredCustomers.slice(
+    // Determine comparison based on sort criteria
+    if (sortCriteria === "name") {
+      comparison = a.first_name.localeCompare(b.first_name);
+    } else if (sortCriteria === "birthday") {
+      comparison =
+        new Date(a.birthdate).getTime() - new Date(b.birthdate).getTime();
+    }
+
+    // Reverse the order if the sort direction is descending
+    return sortDirection === "asc" ? comparison : -comparison;
+  });
+
+  // Pagination
+  const totalPages = Math.ceil(sortedCustomers.length / itemsPerPage);
+  const paginatedCustomers = sortedCustomers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+  const handleSortChange = () => {
+    setIsDropdownOpen(!isDropdownOpen); // Toggle dropdown visibility
+  };
+
+  // Implement the onSortChange function
+  const handleSortOptionChange = (
+    sortDirection: "asc" | "desc",
+    criteria: "name" | "birthday"
+  ) => {
+    setSortDirection(sortDirection);
+    setSortCriteria(criteria);
+    setIsDropdownOpen(false);
+  };
+
+  // Download CSV
+  const csvHeaders = [
+    { label: "No", key: "no" },
+    { label: "Name", key: "name" },
+    { label: "Email", key: "email" },
+    { label: "Phone", key: "phone" },
+    { label: "Birthday", key: "signup_date" },
+    { label: "Last Activity", key: "last_activity" },
+  ];
+
+  // Download PDF
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Customer Data List", 14, 22);
+    autoTable(doc, {
+      head: [["No", "Name", "Email", "Phone", "Signup Date", "Last Activity"]],
+      body: sortedCustomers.map((customer, index) => [
+        index + 1,
+        `${customer.first_name} ${customer.last_name}`,
+        customer.email || "Not Found",
+        customer.phone_number || "Not Found",
+        isValid(new Date(customer.signup_date))
+          ? format(new Date(customer.signup_date), "yyyy-MM-dd")
+          : "Invalid Date",
+        isValid(new Date(customer.last_activity))
+          ? format(new Date(customer.last_activity), "yyyy-MM-dd")
+          : "Invalid Date",
+      ]),
+    });
+    doc.save("customer_data.pdf");
+  };
 
   return (
     <Layout>
@@ -60,25 +140,76 @@ const CRMDataList = () => {
           Customer Data List
         </h1>
 
-        {/* Search bar */}
-        <div className="mb-6">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by name or email"
-            className="p-3 border border-gray-300 rounded-lg w-full shadow-sm outline-none"
-          />
+        <div className="flex items-center justify-between space-x-4 w-full">
+          {/* Search bar */}
+          <div className="mb-6 w-full">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by name or email"
+              className="p-3 border border-gray-300 rounded-lg w-full shadow-sm outline-none"
+            />
+          </div>
+
+          {/* Sort options button */}
+          <div className="relative">
+            <button onClick={handleSortChange} className="text-black mb-6">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="size-5 ml-1"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 0 1 .628.74v2.288a2.25 2.25 0 0 1-.659 1.59l-4.682 4.683a2.25 2.25 0 0 0-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 0 1 8 18.25v-5.757a2.25 2.25 0 0 0-.659-1.591L2.659 6.22A2.25 2.25 0 0 1 2 4.629V2.34a.75.75 0 0 1 .628-.74Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+
+            {/* Dropdown menu */}
+            {isDropdownOpen && (
+              <div className="absolute z-50 mt-0 w-32 bg-gray-100 border rounded-lg shadow-lg right-0 overflow-hidden">
+                <div
+                  className="px-4 py-2 cursor-pointer text-sm hover:bg-gray-300 hover:font-semibold duration-300 transition-all ease-out"
+                  onClick={() => handleSortOptionChange("asc", "name")}
+                >
+                  Sort by Name (A-Z)
+                </div>
+                <div
+                  className="px-4 py-2 cursor-pointer text-sm hover:bg-gray-300 hover:font-semibold duration-300 transition-all ease-out"
+                  onClick={() => handleSortOptionChange("desc", "name")}
+                >
+                  Sort by Name (Z-A)
+                </div>
+                <div
+                  className="px-4 py-2 cursor-pointer text-sm hover:bg-gray-300 hover:font-semibold duration-300 transition-all ease-out"
+                  onClick={() => handleSortOptionChange("asc", "birthday")}
+                >
+                  Sort by Birthday (A-Z)
+                </div>
+                <div
+                  className="px-4 py-2 cursor-pointer text-sm hover:bg-gray-300 hover:font-semibold duration-300 transition-all ease-out"
+                  onClick={() => handleSortOptionChange("desc", "birthday")}
+                >
+                  Sort by Birthday (Z-A)
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
+        {/* Loading and table */}
         {loading ? (
           <Loading />
-        ) : filteredCustomers.length === 0 ? (
+        ) : sortedCustomers.length === 0 ? (
           <p className="text-center text-gray-500">No customers found</p>
         ) : (
           <>
-            {/* CRM Data Table */}
-            <div className=" table-container overflow-x-auto">
+            {/* Updated table to include all fields from CustomerData */}
+            <div className="table-container overflow-x-auto">
               <table className="table-auto w-full text-left border-collapse border border-gray-200 cursor-pointer">
                 <thead>
                   <tr className="bg-gray-300 text-gray-700">
@@ -131,17 +262,25 @@ const CRMDataList = () => {
                 </tbody>
               </table>
             </div>
-
-            {/* Pagination */}
-            <div className="mt-6">
+            <div className=" mt-10">
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
-                handlePageChange={handlePageChange}
+                onPageChange={handlePageChange}
               />
             </div>
           </>
         )}
+
+        {/* PDF download */}
+        <div className="mt-6 flex gap-4">
+          <button
+            onClick={handleDownloadPDF}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg shadow hover:bg-red-600"
+          >
+            Download PDF
+          </button>
+        </div>
       </div>
     </Layout>
   );

@@ -1,5 +1,6 @@
 export interface CustomerData {
   customer_id: number;
+  signup_date: string;
   first_name: string;
   last_name: string;
   email: string;
@@ -9,4 +10,5 @@ export interface CustomerData {
   city: string;
   country: string;
   postal_code: string;
+  last_activity: string;
 }
