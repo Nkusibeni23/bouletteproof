@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiLogOut } from "react-icons/fi";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [activeLink, setActiveLink] = useState("landing-page");
@@ -82,16 +82,19 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </span>
           </Link>
         </nav>
-        <div className="p-4 relative">
+        <div className="p-4 mb-10">
           <Link href="/">
-            <span
+            <p
               onClick={() => handleLinkClick("logout")}
               className={`block text-lg p-2 rounded-md ${
-                activeLink === "logout" ? "bg-gray-700" : "hover:bg-gray-700"
+                activeLink === "logout" ? "bg-red-200" : "hover:bg-red-400"
               }`}
             >
-              Logout
-            </span>
+              <button className="flex items-center space-x-2 px-4 py-1">
+                <FiLogOut className="mr-2 text-gray-50" />
+                <span className=" text-gray-50 font-medium">Logout</span>
+              </button>
+            </p>
           </Link>
         </div>
       </aside>
@@ -114,9 +117,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         {/* Scrollable content */}
         <main className="p-6 bg-gray-50 flex-1 overflow-y-auto mt-16">
           {children}
+          {/* Toggle button */}
           <button
             onClick={toggleSidebar}
-            className="flex items-center  focus:outline-none mb-6 absolute bottom-20 left-8"
+            className="flex items-center focus:outline-none mb-6 absolute bottom-32 left-8"
           >
             {isSidebarOpen ? (
               <div className=" py-2 px-4 bg-gray-600 flex items-center space-x-2 rounded-r-full">
@@ -131,7 +135,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             )}
           </button>
         </main>
-        {/* Toggle button */}
       </div>
     </div>
   );
