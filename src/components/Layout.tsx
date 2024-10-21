@@ -147,26 +147,30 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             isSidebarOpen ? "left-24 md:left-64" : "left-0"
           } z-10 transition-all duration-300 shadow-md`}
         >
-          <div className="text-xl font-semibold">Dashboard</div>
-          {/* Display User's Email and Profile Picture */}
-          {user && (
-            <div className="flex items-center space-x-4 z-50">
-              <div className=" flex flex-col space-y-2">
-                <span className="text-gray-500 text-sm">{user.email}</span>
-                <span className="text-gray-600 font-medium">Super User</span>
+          <div className="flex items-center justify-between w-full">
+            {/* Dashboard at the start */}
+            <div className="text-xl font-semibold">Dashboard</div>
+
+            {/* User's Email and Profile Picture at the end */}
+            {user && (
+              <div className="flex items-center space-x-4 z-50 mr-72">
+                <div className="flex flex-col space-y-2">
+                  <span className="text-gray-500 text-sm">{user.email}</span>
+                  <span className="text-gray-600 font-medium">Super User</span>
+                </div>
+                <Image
+                  src={
+                    user?.profilePicture ||
+                    "https://ui-avatars.com/api/?name=User"
+                  }
+                  alt="Profile"
+                  width={30}
+                  height={30}
+                  className="rounded-full object-cover"
+                />
               </div>
-              <Image
-                src={
-                  user?.profilePicture ||
-                  "https://ui-avatars.com/api/?name=User"
-                }
-                alt="Profile"
-                width={30}
-                height={30}
-                className="rounded-full object-cover"
-              />
-            </div>
-          )}
+            )}
+          </div>
         </header>
 
         {/* Scrollable content */}
