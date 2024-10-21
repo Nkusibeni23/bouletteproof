@@ -55,11 +55,11 @@ const LandingPage = () => {
     <Layout>
       <div>
         {/* Page Header */}
-        <div className="flex items-center justify-center flex-col">
-          <h1 className="text-3xl font-extrabold my-4">
+        <div className="flex items-center justify-center flex-col text-center py-6">
+          <h1 className="text-4xl font-extrabold my-4 text-gray-900">
             Welcome to the Dashboard
           </h1>
-          <p className="mb-4">
+          <p className="mb-6 text-lg text-gray-600">
             Here is a summary of your website statistics and CRM data.
           </p>
         </div>
@@ -70,41 +70,57 @@ const LandingPage = () => {
         ) : (
           <div>
             {/* Cards Layout */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 cursor-pointer">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-4">
               {/* Loop over the paginated data and display each visit's details */}
               {paginatedData.map((visit) => (
                 <div
                   key={visit.visit_id}
-                  className="bg-gradient-to-r from-gray-50 to-gray-200 shadow-lg rounded-xl p-6 border border-gray-300 transition transform hover:scale-105 hover:shadow-2xl"
+                  className="bg-white shadow-lg rounded-xl p-6 border border-gray-200 hover:bg-gradient-to-r from-blue-50 to-blue-100 transition-all transform hover:scale-105 duration-200 ease-in-out cursor-pointer"
                 >
-                  <h2 className="text-xl font-bold text-gray-600 mb-3">
+                  <h2 className="text-2xl font-bold text-gray-800 mb-3">
                     Visit Details
                   </h2>
-                  <p className="text-md">
-                    <strong>Date:</strong> {visit.Date}
-                  </p>
-                  <p className="text-md">
-                    <strong>Visitors:</strong> {visit.unique_visitors}
-                  </p>
-                  <p className="text-md">
-                    <strong>Bounce Rate:</strong> {visit.bounce_rate}%
-                  </p>
-                  <p className="text-md">
-                    <strong>Avg Session:</strong> {visit.avg_session_duration}{" "}
-                    sec
-                  </p>
-                  <p className="text-md">
-                    <strong>Device:</strong> {visit.device_type}
-                  </p>
-                  <p className="text-md">
-                    <strong>Browser:</strong> {visit.browser}
-                  </p>
+
+                  {/* New 2-column grid for visit details */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-md text-gray-600">
+                        <strong>Date:</strong> {visit.Date}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-md text-gray-600">
+                        <strong>Visitors:</strong> {visit.unique_visitors}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-md text-gray-600">
+                        <strong>Bounce Rate:</strong> {visit.bounce_rate}%
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-md text-gray-600">
+                        <strong>Avg Session:</strong>{" "}
+                        {visit.avg_session_duration} sec
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-md text-gray-600">
+                        <strong>Device:</strong> {visit.device_type}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-md text-gray-600">
+                        <strong>Browser:</strong> {visit.browser}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
 
             {/* Pagination */}
-            <div className=" mt-10">
+            <div className="mt-10 flex justify-center">
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
