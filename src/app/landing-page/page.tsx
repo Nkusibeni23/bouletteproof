@@ -80,7 +80,7 @@ const LandingPage = () => {
               {paginatedData.map((visit) => (
                 <div
                   key={visit.visit_id}
-                  className="bg-gradient-to-r from-gray-100 to-gray-50 shadow-lg rounded-xl p-6 border border-gray-300 transition transform hover:scale-105 hover:shadow-2xl"
+                  className="bg-gradient-to-r from-gray-50 to-gray-200 shadow-lg rounded-xl p-6 border border-gray-300 transition transform hover:scale-105 hover:shadow-2xl"
                 >
                   <h2 className="text-xl font-bold text-gray-600 mb-3">
                     Visit Details

@@ -94,13 +94,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             isScrolled ? "shadow-md" : ""
           }`}
         >
-          <div className="text-xl font-semibold">MX</div>
-          <input
-            type="text"
-            placeholder="Search..."
-            className="p-2 border rounded-lg w-72"
-          />
-          <div className="bg-gray-300 rounded-full w-10 h-10"></div>
+          <div className="text-xl font-semibold">Dashboard</div>
         </header>
 
         {/* Scrollable content */}
