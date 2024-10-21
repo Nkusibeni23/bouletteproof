@@ -30,6 +30,7 @@ const LoginPage = () => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log(data);
         localStorage.setItem(
           "user",
           JSON.stringify({
@@ -42,11 +43,15 @@ const LoginPage = () => {
           router.push("/landing-page");
         }, 2000);
       } else {
-        const data = await response.json();
-        toast.error(data.message || "Login failed.");
+        const errorMessage = (await response.json()).message || "Login failed.";
+        toast.error(errorMessage);
       }
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      console.error(error);
+
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+      toast.error(`Something went wrong: ${errorMessage}`);
     }
   };
 

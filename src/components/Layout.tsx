@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { FiEye, FiEyeOff, FiLogOut } from "react-icons/fi";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { RiFileList2Line } from "react-icons/ri";
+import Image from "next/image";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [activeLink, setActiveLink] = useState("landing-page");
@@ -154,10 +155,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 <span className="text-gray-500 text-sm">{user.email}</span>
                 <span className="text-gray-600 font-medium">Super User</span>
               </div>
-              <img
-                src={user.profilePicture}
+              <Image
+                src={
+                  user?.profilePicture ||
+                  "https://ui-avatars.com/api/?name=User"
+                }
                 alt="Profile"
-                className="w-10 h-10 rounded-full object-cover"
+                width={30}
+                height={30}
+                className="rounded-full object-cover"
               />
             </div>
           )}

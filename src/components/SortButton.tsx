@@ -1,10 +1,7 @@
 import { SortButtonProps } from "@/types/SortButtonProps";
 import { useState } from "react";
 
-const SortButton: React.FC<SortButtonProps> = ({
-  sortDirection,
-  onSortChange,
-}) => {
+const SortButton: React.FC<SortButtonProps> = ({ onSortChange }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleSortChange = () => {
