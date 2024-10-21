@@ -1,36 +1,52 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaGoogle, FaApple, FaEnvelope, FaLock } from "react-icons/fa"; // Importing icons
+import { FaGoogle, FaApple, FaEnvelope, FaLock } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const router = useRouter();
 
+  // Handle Login
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
     if (!email || !password) {
-      setError("Both fields are required.");
+      toast.error("Both fields are required.");
       return;
     }
 
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch("/api/auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (response.ok) {
-      router.push("/landing-page");
-    } else {
-      const data = await response.json();
-      setError(data.message);
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            email: email,
+            profilePicture: "https://ui-avatars.com/api/?name=User",
+          })
+        );
+        toast.success("Login successful! Redirecting...");
+        setTimeout(() => {
+          router.push("/landing-page");
+        }, 2000);
+      } else {
+        const data = await response.json();
+        toast.error(data.message || "Login failed.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
@@ -41,9 +57,6 @@ const LoginPage = () => {
         className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm"
       >
         <h1 className="text-3xl font-semibold mb-6 text-center">Login</h1>
-
-        {/* Error Message */}
-        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
         {/* Email Input */}
         <div className="mb-4">
@@ -76,7 +89,6 @@ const LoginPage = () => {
             />
           </div>
         </div>
-        
 
         {/* Login Button */}
         <button
@@ -111,6 +123,17 @@ const LoginPage = () => {
           </button>
         </div>
       </form>
+
+      {/* Toast Notifications */}
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="colored"
+      />
     </div>
   );
 };

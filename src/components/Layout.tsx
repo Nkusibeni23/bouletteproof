@@ -1,7 +1,6 @@
-"use client";
-
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FiEye, FiEyeOff, FiLogOut } from "react-icons/fi";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { RiFileList2Line } from "react-icons/ri";
@@ -9,6 +8,31 @@ import { RiFileList2Line } from "react-icons/ri";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [activeLink, setActiveLink] = useState("landing-page");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [user, setUser] = useState<{
+    email: string;
+    profilePicture?: string;
+  } | null>(null);
+
+  const router = useRouter();
+  useEffect(() => {
+    // Fetch user data from localStorage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      console.log("Fetched user from localStorage:", parsedUser);
+      if (parsedUser.email) {
+        // Set user with email and profile picture from internet if not provided
+        setUser({
+          email: parsedUser.email,
+          profilePicture:
+            parsedUser.profilePicture ||
+            "https://ui-avatars.com/api/?name=User",
+        });
+      }
+    } else {
+      console.log("No user found in localStorage");
+    }
+  }, []);
 
   const handleLinkClick = (link: string) => {
     setActiveLink(link);
@@ -16,6 +40,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleLogout = () => {
+    // Clear the localStorage data
+    localStorage.removeItem("user");
+    // Redirect to the login page
+    router.push("/login");
   };
 
   return (
@@ -83,25 +114,23 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </Link>
         </nav>
         <div className="p-4 mb-10">
-          <Link href="/">
-            <p
-              onClick={() => handleLinkClick("logout")}
-              className={`block text-lg p-2 rounded-md ${
-                activeLink === "logout" ? "bg-red-200" : "hover:bg-red-400"
-              }`}
-            >
-              <button className="flex items-center space-x-2 px-4 py-1">
-                <FiLogOut className="mr-2 text-gray-50" />
-                <span
-                  className={`hidden md:inline ${
-                    !isSidebarOpen ? "hidden" : ""
-                  } text-gray-50 font-medium`}
-                >
-                  Logout
-                </span>
-              </button>
-            </p>
-          </Link>
+          <span
+            onClick={handleLogout}
+            className={`block text-lg p-2 rounded-md ${
+              activeLink === "logout" ? "bg-red-200" : "hover:bg-red-400"
+            }`}
+          >
+            <button className="flex items-center space-x-2 px-4 py-1">
+              <FiLogOut className="mr-2 text-gray-50" />
+              <span
+                className={`hidden md:inline ${
+                  !isSidebarOpen ? "hidden" : ""
+                } text-gray-50 font-medium`}
+              >
+                Logout
+              </span>
+            </button>
+          </span>
         </div>
       </aside>
 
@@ -118,6 +147,20 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           } z-10 transition-all duration-300 shadow-md`}
         >
           <div className="text-xl font-semibold">Dashboard</div>
+          {/* Display User's Email and Profile Picture */}
+          {user && (
+            <div className="flex items-center space-x-4 z-50">
+              <div className=" flex flex-col space-y-2">
+                <span className="text-gray-500 text-sm">{user.email}</span>
+                <span className="text-gray-600 font-medium">Super User</span>
+              </div>
+              <img
+                src={user.profilePicture}
+                alt="Profile"
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            </div>
+          )}
         </header>
 
         {/* Scrollable content */}
