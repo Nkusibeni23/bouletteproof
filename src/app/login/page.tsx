@@ -20,7 +20,7 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await fetch("/api/auth", {
+      const response = await fetch("/api/suppliers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
