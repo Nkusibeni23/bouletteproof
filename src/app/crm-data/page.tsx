@@ -37,8 +37,11 @@ const CRMDataList = () => {
   }, []);
 
   // Apply search and filtering logic here
-  const filteredCustomers = customers.filter((customer) =>
-    customer.first_name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCustomers = customers.filter(
+    (customer) =>
+      customer.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // **Apply sorting here**
